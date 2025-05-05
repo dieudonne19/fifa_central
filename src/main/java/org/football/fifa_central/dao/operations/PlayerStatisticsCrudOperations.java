@@ -20,7 +20,9 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -133,7 +135,8 @@ public class PlayerStatisticsCrudOperations {
             for (PlayerStats p : entities) {
                 statement.setString(1, p.getId());
                 statement.setString(2, p.getPlayer().getId());
-                statement.setString(3, p.getSeason().getId());
+                // statement.setString(3, p.getSeason().getId());
+                statement.setString(3, UUID.randomUUID().toString());
                 statement.setString(4, p.getPlayingTime().getId());
                 statement.setLong(5, p.getScoredGoals());
                 statement.setTimestamp(6, Timestamp.from(p.getSyncDate()));
@@ -143,8 +146,9 @@ public class PlayerStatisticsCrudOperations {
             }
 
             int[] rs = statement.executeBatch(); // Batch 💥
-            if (rs.length != entities.size()) {
-                return savedPlayerStats;
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed");
+                return null;
             }
             // Pas besoin de re-fetch les playersStats si on fait juste du save
             return entities;

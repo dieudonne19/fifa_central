@@ -16,16 +16,12 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class PlayerMapper implements Function<ResultSet, Player> {
 
-    private final ChampionshipCrudOperations championshipCrudOperations;
-
     @SneakyThrows
     @Override
     public Player apply(ResultSet resultSet) {
-        String championshipId = resultSet.getString("championship_id");
         String playerId = resultSet.getString("id");
 
         Player player = new Player();
-        Championship championship = championshipCrudOperations.getById(championshipId);
 
         player.setId(playerId);
         player.setName(resultSet.getString("name"));
@@ -35,9 +31,9 @@ public class PlayerMapper implements Function<ResultSet, Player> {
         player.setNumber(resultSet.getInt("number"));
 
         // player.setClub();
-        // player.setPlayerStats(); efa any am DAO evitena boucle
+        // player.setPlayerStats(); dans service (refactored)
+        // player.setChampionship(); dans service
         player.setSyncDate(resultSet.getTimestamp("sync_date").toInstant());
-        player.setChampionship(championship);
 
         return player;
     }

@@ -3,9 +3,11 @@ package org.football.fifa_central.service;
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerCrudOperations;
+import org.football.fifa_central.dao.operations.PlayerStatisticsCrudOperations;
 import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
+import org.football.fifa_central.model.PlayerStats;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +19,31 @@ import java.util.List;
 public class PlayerService {
     private final PlayerCrudOperations playerCrudOperations;
     private final ChampionshipCrudOperations championshipCrudOperations;
+    private final PlayerStatisticsCrudOperations playerStatisticsCrudOperations;
 
     public List<Player> getAllFromExternalAPI(URL url) {
         List<Player> externalPlayers = playerCrudOperations.getAllFromExternalAPI(url);
         externalPlayers.forEach(player -> {
             Championship championship = championshipCrudOperations.getByApiURL(url.getUrl());
+            List<PlayerStats> playerStats = playerStatisticsCrudOperations.getManyByPlayerId(player.getId());
 
             player.setSyncDate(Instant.now());
+            player.setPlayerStats(playerStats);
             player.setChampionship(championship);
             // club a setter
         });
         return externalPlayers;
     }
 
-    public List<Player> saveAll(List<Player> entities){
+    public List<Player> getAllFromDb() {
+        List<Player> internalPlayers = playerCrudOperations.getAllFromDB();
+
+        this.setChampionshipAndPlayerStats(internalPlayers);
+
+        return internalPlayers;
+    }
+
+    public List<Player> saveAll(List<Player> entities) {
         List<Player> players = playerCrudOperations.saveAll(entities);
         return players;
     }
@@ -45,16 +58,36 @@ public class PlayerService {
 
     public Player getById(String playerId) {
         Player player = playerCrudOperations.getById(playerId);
+
+        this.setChampionshipAndPlayerStats(List.of(player));
+
         return player;
     }
 
     public List<Player> getManyByClubId(String clubId) {
-        List<Player> players = playerCrudOperations.getManyByClubId(clubId);
-        return players;
+        List<Player> internalPlayers = playerCrudOperations.getManyByClubId(clubId);
+
+        this.setChampionshipAndPlayerStats(internalPlayers);
+
+        return internalPlayers;
     }
 
     public List<Player> getManyByChampionshipId(String championshipId) {
-        List<Player> players = playerCrudOperations.getManyByChampionshipId(championshipId);
-        return players;
+        List<Player> internalPlayers = playerCrudOperations.getManyByChampionshipId(championshipId);
+
+        this.setChampionshipAndPlayerStats(internalPlayers);
+
+        return internalPlayers;
+    }
+
+    private void setChampionshipAndPlayerStats(List<Player> internalPlayers) {
+        internalPlayers.forEach(player -> {
+            Championship championship = championshipCrudOperations.getByApiURL(player.getChampionship().getApiUrl());
+            List<PlayerStats> playerStats = playerStatisticsCrudOperations.getManyByPlayerId(player.getId());
+
+            player.setChampionship(championship);
+            player.setPlayerStats(playerStats);
+            // club a setter
+        });
     }
 }
