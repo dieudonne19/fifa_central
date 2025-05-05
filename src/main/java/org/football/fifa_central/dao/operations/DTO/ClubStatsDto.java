@@ -6,7 +6,12 @@ import org.football.fifa_central.model.Coach;
 
 import java.time.Year;
 
-@AllArgsConstructor@NoArgsConstructor@Getter@Setter@EqualsAndHashCode@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class ClubStatsDto {
     private int rankingPoints;
     private int scoredGoals;

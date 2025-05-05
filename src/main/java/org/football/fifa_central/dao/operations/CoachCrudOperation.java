@@ -10,15 +10,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Repository@RequiredArgsConstructor
+@Repository
+@RequiredArgsConstructor
 public class CoachCrudOperation {
     private final DataSource dataSource;
 
     @SneakyThrows
-    public Coach getByName(String name){
+    public Coach getByName(String name) {
         Coach coach = null;
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT coach_name, nationality FROM coach WHERE coach_name = ?");
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT coach_name, nationality FROM coach WHERE coach_name = ?");
         ) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {

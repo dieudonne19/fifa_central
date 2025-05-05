@@ -2,8 +2,9 @@ package org.football.fifa_central.service;
 
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
-import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.*;
+import org.football.fifa_central.model.Championship;
+import org.football.fifa_central.model.Club;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,7 @@ public class SynchronizationService {
     private final ClubStatsService clubStatsService;
     private final SeasonService seasonService;
     private final PlayerStatisticsService playerStatisticsService;
-    private List<URL> urls = List.of(
-            new URL(8081)
-    );
+
 
    /* public ResponseEntity<Object> getAllPlayersFromChampionships() {
         List<Player> players = new ArrayList<>();

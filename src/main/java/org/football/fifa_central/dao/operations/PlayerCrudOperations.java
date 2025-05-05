@@ -3,12 +3,9 @@ package org.football.fifa_central.dao.operations;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
-import org.football.fifa_central.dao.mapper.ChampionshipMapper;
 import org.football.fifa_central.dao.mapper.PlayerMapper;
-import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
-import org.football.fifa_central.model.PlayerStats;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +24,9 @@ public class PlayerCrudOperations {
     private final PlayerMapper playerMapper;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public List<Player> getAllFromExternalAPI(URL url) {
+    public List<Player> getAllFromExternalAPI(Championship championship) {
         ResponseEntity<List<Player>> response = restTemplate.exchange(
-                url.getUrl() + "/players",
+                championship.getApiUrl() + "/players",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {

@@ -6,8 +6,6 @@ import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.ClubStatsDtoMapper;
 import org.football.fifa_central.dao.operations.DTO.ClubStatsDto;
-import org.football.fifa_central.endpoint.rest.URL;
-import org.football.fifa_central.model.Club;
 import org.football.fifa_central.model.ClubStats;
 import org.football.fifa_central.model.Season;
 import org.springframework.core.ParameterizedTypeReference;
