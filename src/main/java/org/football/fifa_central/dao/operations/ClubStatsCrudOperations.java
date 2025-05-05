@@ -53,8 +53,10 @@ public class ClubStatsCrudOperations {
                 statement.setInt(7,clubStats.getDifferenceGoals());
                 statement.setTimestamp(8, Timestamp.from(clubStats.getSyncDate()));
             }
-            statement.executeBatch();
-
+            int[] rs = statement.executeBatch();
+            if (rs.length != clubStatsToSave.size()) {
+                return clubStatsToSave;
+            }
         }
         return clubStatsToSave;
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ClubStatsCrudOperations;
 import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
+import org.football.fifa_central.model.Club;
 import org.football.fifa_central.model.ClubStats;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,10 @@ public class ClubStatsService {
     public List<ClubStats> sync(Championship championship) {
         List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship.getApiUrl());
 
+       List<ClubStats> syncClubStats =  clubStatsCrudOperations.saveAll(clubStatsList);
 
 
-        return clubStatsList;
+        return syncClubStats;
     }
 
 

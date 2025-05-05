@@ -14,14 +14,14 @@ public class ClubService {
 
     private final ClubCrudOperations clubCrudOperations;
 
-    public List<Club> sync(URL url){
+    public List<Club> sync(String url){
 
         List<Club> clubs = clubCrudOperations.getAllFromApi(url);
         clubs.forEach(club -> {
             club.setSync_date(Instant.now());
         });
-        clubCrudOperations.saveAll(clubs);
-        return clubs;
+      List<Club> synchronizedClub =  clubCrudOperations.saveAll(clubs);
+        return synchronizedClub;
 
     }
 
