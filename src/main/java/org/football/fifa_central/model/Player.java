@@ -1,8 +1,10 @@
 package org.football.fifa_central.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,8 +19,14 @@ public class Player {
     private String country;
     private int age;
     private int number;
+    private Instant syncDate;
 
-    private List<PlayerStats> playerStats;
-    private Championship championship;
     private Positions position;
+    private Club club;
+
+    @JsonIgnore
+    private List<PlayerStats> playerStats;
+
+    @JsonIgnore
+    private Championship championship;
 }
