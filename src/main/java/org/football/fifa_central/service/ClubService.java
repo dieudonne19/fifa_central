@@ -2,7 +2,6 @@ package org.football.fifa_central.service;
 
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ClubCrudOperations;
-import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Club;
 import org.springframework.stereotype.Service;

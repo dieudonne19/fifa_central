@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerStatisticsCrudOperations;
-import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
@@ -21,10 +20,11 @@ public class PlayerService {
     private final ChampionshipCrudOperations championshipCrudOperations;
     private final PlayerStatisticsCrudOperations playerStatisticsCrudOperations;
 
-    public List<Player> getAllFromExternalAPI(URL url) {
-        List<Player> externalPlayers = playerCrudOperations.getAllFromExternalAPI(url);
+    public List<Player> getAllFromExternalAPI(Championship championship) {
+        List<Player> externalPlayers = playerCrudOperations.getAllFromExternalAPI(championship);
         externalPlayers.forEach(player -> {
-            Championship championship = championshipCrudOperations.getByApiURL(url.getUrl());
+            //Championship championship = championshipCrudOperations.getByApiURL(url.getUrl());
+
             List<PlayerStats> playerStats = playerStatisticsCrudOperations.getManyByPlayerId(player.getId());
 
             player.setSyncDate(Instant.now());
@@ -48,8 +48,8 @@ public class PlayerService {
         return players;
     }
 
-    public List<Player> synchronize(URL url) {
-        List<Player> externalPlayers = this.getAllFromExternalAPI(url);
+    public List<Player> synchronize(Championship championship) {
+        List<Player> externalPlayers = this.getAllFromExternalAPI(championship);
         List<Player> playersSavedToCentral = playerCrudOperations.saveAll(externalPlayers);
 
         return playersSavedToCentral;
