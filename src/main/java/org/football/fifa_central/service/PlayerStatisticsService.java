@@ -19,7 +19,15 @@ public class PlayerStatisticsService {
 
     public PlayerStats getFromExternalAPI(URL url, String playerId, Year seasonYear) {
         PlayerStats externalPlayerStats = playerStatisticsCrudOperations.getFromExternalAPI(url, playerId, seasonYear);
+        externalPlayerStats.setSyncDate(Instant.now());
+
         return externalPlayerStats;
+    }
+
+    public List<PlayerStats> getFromDb() {
+        List<PlayerStats> playerStatsFromDb = playerStatisticsCrudOperations.getAllFromDB();
+
+        return playerStatsFromDb;
     }
 
     public List<PlayerStats> saveAll(List<PlayerStats> entities) {
@@ -31,7 +39,6 @@ public class PlayerStatisticsService {
         List<PlayerStats> playerStats = new ArrayList<>();
         players.forEach(player -> {
             PlayerStats pls = this.getFromExternalAPI(url, player.getId(), seasonYear);
-            pls.setSyncDate(Instant.now());
             // season mila settena
             playerStats.add(pls);
         });

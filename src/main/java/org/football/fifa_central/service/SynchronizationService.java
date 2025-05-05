@@ -3,9 +3,7 @@ package org.football.fifa_central.service;
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.endpoint.rest.URL;
-import org.football.fifa_central.model.Championship;
-import org.football.fifa_central.model.Club;
-import org.football.fifa_central.model.Player;
+import org.football.fifa_central.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,9 @@ public class SynchronizationService {
     private final PlayerService playerService;
     private final ChampionshipCrudOperations championshipCrudOperations;
     private final ClubService clubService;
+    private final ClubStatsService clubStatsService;
+    private final SeasonService seasonService;
+    private final PlayerStatisticsService playerStatisticsService;
     private List<URL> urls = List.of(
             new URL(8081)
     );
@@ -36,12 +37,18 @@ public class SynchronizationService {
     public ResponseEntity<Object> synchronize() {
         List<Championship> championships = championshipCrudOperations.getAll();
         List<Club> synchronizedClubs = new ArrayList<>();
+        List<ClubStats> synchronizedClubStats = new ArrayList<>();
+        List<Season> synchronizedSeasons = new ArrayList<>();
         for (Championship championship : championships) {
-            System.out.println(clubService.sync(championship));
-           synchronizedClubs.addAll(clubService.sync(championship));
+             synchronizedClubs.addAll(clubService.sync(championship));
+             synchronizedSeasons.addAll(seasonService.sync(championship));
+             synchronizedSeasons.forEach(season -> {
+            synchronizedClubStats.addAll(clubStatsService.sync(championship,season));
+
+             });
         }
-        if (synchronizedClubs.size() > 0) {
-            return ResponseEntity.ok(synchronizedClubs);
+        if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats !=null) {
+            return ResponseEntity.ok(List.of(synchronizedClubs, synchronizedClubStats, synchronizedSeasons));
         }
         return ResponseEntity.internalServerError().body("internal server error");
     }

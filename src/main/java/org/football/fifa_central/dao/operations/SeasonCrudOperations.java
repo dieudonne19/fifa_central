@@ -27,7 +27,7 @@ public class SeasonCrudOperations {
 
     public List<Season> getSeasonsFromApi(String apiUrl) {
         ResponseEntity<List<Season>> response = restTemplate.exchange(apiUrl+"seasons", HttpMethod.GET,null,new ParameterizedTypeReference<List<Season>>() {});
-
+       // System.out.println("seasons "+response.getBody());
         return response.getBody();
     }
     @SneakyThrows
@@ -43,12 +43,13 @@ public class SeasonCrudOperations {
                 statement.setString(4,season.getAlias());
                 statement.addBatch();
             }
-            int[] result = statement.executeBatch();
-            if(Arrays.stream(result).filter(value -> value != 1).toArray().length > 0){
-                throw new Exception("cannot save seasons");
+            int[] rs = statement.executeBatch();
+            if (Arrays.stream(rs).filter(value -> value != 0).toArray().length > 0) {
+                System.out.println("One of entries failed "+ rs.length);
+                return null;
             }
+            return seasons;
         }
-        return seasons;
     }
     @SneakyThrows
     public List<Season> getAll(){
@@ -66,6 +67,7 @@ public class SeasonCrudOperations {
             }
 
         }
+        return seasons;
     }
 
 

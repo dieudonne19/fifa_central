@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository@RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class ClubCrudOperations {
     }
     @SneakyThrows
     public List<Club> saveAll(List<Club> clubs) {
-        System.out.println("clubs "+clubs);
+      //  System.out.println("clubs "+clubs);
         //List<Club> savedClubs = new ArrayList<>();
         try(
                 Connection connection = dataSource.getConnection();
@@ -53,10 +54,14 @@ public class ClubCrudOperations {
                 preparedStatement.addBatch();
             }
             int[] rs = preparedStatement.executeBatch(); // Batch 💥
-            if (rs.length != clubs.size()) {
-                return clubs;
+            if (Arrays.stream(rs).filter(value -> value != 1).toArray().length > 0) {
+                System.out.println("One of entries failed");
+                for (int r : rs) {
+                    System.out.println(r);
+                }
+                return null;
             }
-            return null;
+            return clubs;
         }
     }
 

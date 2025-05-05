@@ -3,7 +3,6 @@ package org.football.fifa_central.service;
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.model.Championship;
-import org.football.fifa_central.model.ChampionshipName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

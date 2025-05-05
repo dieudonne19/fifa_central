@@ -3,8 +3,10 @@ package org.football.fifa_central.dao.operations;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
+import org.football.fifa_central.dao.mapper.ChampionshipMapper;
 import org.football.fifa_central.dao.mapper.PlayerMapper;
 import org.football.fifa_central.endpoint.rest.URL;
+import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -23,7 +26,6 @@ public class PlayerCrudOperations {
     private final DataSource dataSource;
     private final PlayerMapper playerMapper;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final PlayerStatisticsCrudOperations playerStatisticsCrudOperations;
 
     public List<Player> getAllFromExternalAPI(URL url) {
         ResponseEntity<List<Player>> response = restTemplate.exchange(
@@ -49,8 +51,6 @@ public class PlayerCrudOperations {
                 while (resultSet.next()) {
                     Player player = playerMapper.apply(resultSet);
 
-                    this.setPlayerStatsToPlayer(player);
-
                     players.add(player);
                 }
             }
@@ -72,7 +72,6 @@ public class PlayerCrudOperations {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     player = playerMapper.apply(resultSet);
-                    this.setPlayerStatsToPlayer(player);
                 }
             }
             return player;
@@ -93,8 +92,6 @@ public class PlayerCrudOperations {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Player player = playerMapper.apply(resultSet);
-
-                    this.setPlayerStatsToPlayer(player);
 
                     players.add(player);
                 }
@@ -117,8 +114,6 @@ public class PlayerCrudOperations {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Player player = playerMapper.apply(resultSet);
-
-                    this.setPlayerStatsToPlayer(player);
 
                     players.add(player);
                 }
@@ -155,16 +150,12 @@ public class PlayerCrudOperations {
             }
 
             int[] rs = statement.executeBatch(); // Batch 💥
-            if (rs.length != entities.size()){
-                return savedPlayers;
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed");
+                return null;
             }
             // Pas besoin de re-fetch les players si on fait juste du save
             return entities;
         }
-    }
-
-    private void setPlayerStatsToPlayer(Player player) {
-        List<PlayerStats> playerStats = playerStatisticsCrudOperations.getManyByPlayerId(player.getId());
-        player.setPlayerStats(playerStats);
     }
 }

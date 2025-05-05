@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -122,8 +123,9 @@ public class ChampionshipCrudOperations {
             }
 
             int[] rs = statement.executeBatch(); // Batch 💥
-            if (rs.length != entities.size()) {
-                return savedChampionships;
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed");
+                return null;
             }
             // Pas besoin de re-fetch les championships si on fait juste du save
             return entities;

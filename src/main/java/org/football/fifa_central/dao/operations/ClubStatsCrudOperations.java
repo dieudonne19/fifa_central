@@ -9,6 +9,7 @@ import org.football.fifa_central.dao.operations.DTO.ClubStatsDto;
 import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Club;
 import org.football.fifa_central.model.ClubStats;
+import org.football.fifa_central.model.Season;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.Year;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -29,8 +31,8 @@ public class ClubStatsCrudOperations {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ClubStatsDtoMapper clubStatsDtoMapper;
 
-    public List<ClubStats> getClubStatsFromApi(String apiUrl) {
-        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
+    public List<ClubStats> getClubStatsFromApi(String apiUrl, Season season) {
+        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl+"clubs/statistics/"+season.getYear().toString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
         });
         List<ClubStats> clubStats = response.getBody().stream().map(clubStatsDto -> clubStatsDtoMapper.toModel(clubStatsDto)).toList();
         return clubStats;
@@ -43,23 +45,24 @@ public class ClubStatsCrudOperations {
                      "ON CONFLICT (club_id,season_id) DO UPDATE SET points=excluded.points,scored_goals=excluded.scored_goals,conceded_goals=excluded.conceded_goals,clean_sheets=excluded.clean_sheets,difference_goals=excluded.difference_goals,sync_date=excluded.sync_date "
              )
         ) {
-            for( ClubStats clubStats : clubStatsToSave) {
+            for (ClubStats clubStats : clubStatsToSave) {
                 statement.setString(1, clubStats.getClub().getId());
-                statement.setString(2,clubStats.getSeason().getId());
-                statement.setInt(3,clubStats.getRankingPoints());
-                statement.setInt(4,clubStats.getScoredGoals());
-                statement.setInt(5,clubStats.getConcededGoals());
-                statement.setInt(6,clubStats.getCleanSheetNumber());
-                statement.setInt(7,clubStats.getDifferenceGoals());
+                statement.setString(2, clubStats.getSeason().getId());
+                statement.setInt(3, clubStats.getRankingPoints());
+                statement.setInt(4, clubStats.getScoredGoals());
+                statement.setInt(5, clubStats.getConcededGoals());
+                statement.setInt(6, clubStats.getCleanSheetNumber());
+                statement.setInt(7, clubStats.getDifferenceGoals());
                 statement.setTimestamp(8, Timestamp.from(clubStats.getSyncDate()));
             }
             int[] rs = statement.executeBatch();
-            if (rs.length != clubStatsToSave.size()) {
-                return clubStatsToSave;
+            if (Arrays.stream(rs).filter(value -> value != 1).toArray().length > 0) {
+                System.out.println("One of entries failed");
+                return null;
             }
-        }
-        return clubStatsToSave;
+            return clubStatsToSave;
 
+        }
     }
 
 

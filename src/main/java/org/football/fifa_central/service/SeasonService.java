@@ -16,6 +16,9 @@ public class SeasonService {
 
     public List<Season> sync(Championship championship) {
      List<Season> seasonToSave =    seasonCrudOperations.getSeasonsFromApi(championship.getApiUrl());
+     seasonToSave.forEach(season -> {
+         season.setChampionship(championship);
+     });
           List<Season> savedSeason =  seasonCrudOperations.saveAll(seasonToSave);
           return savedSeason;
     }
