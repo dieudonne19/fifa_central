@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.PlayerStatsMapper;
-import org.football.fifa_central.dao.mapper.PlayingTimeMapper;
-import org.football.fifa_central.endpoint.rest.URL;
+import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,9 +30,9 @@ public class PlayerStatisticsCrudOperations {
     private final RestTemplate restTemplate = new RestTemplate();
     private final PlayerStatsMapper playerStatsMapper;
 
-    public PlayerStats getFromExternalAPI(URL url, String playerId, Year seasonYear) {
+    public PlayerStats getFromExternalAPI(Championship championship, String playerId, Year seasonYear) {
         ResponseEntity<PlayerStats> response = restTemplate.exchange(
-                url.getUrl() + "/players/" + playerId + "/statistics/" + seasonYear,
+                championship.getApiUrl() + "/players/" + playerId + "/statistics/" + seasonYear,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {

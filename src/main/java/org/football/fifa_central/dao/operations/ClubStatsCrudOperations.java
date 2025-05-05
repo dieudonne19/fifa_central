@@ -6,8 +6,6 @@ import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.ClubStatsDtoMapper;
 import org.football.fifa_central.dao.operations.DTO.ClubStatsDto;
-import org.football.fifa_central.endpoint.rest.URL;
-import org.football.fifa_central.model.Club;
 import org.football.fifa_central.model.ClubStats;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -43,14 +41,14 @@ public class ClubStatsCrudOperations {
                      "ON CONFLICT (club_id,season_id) DO UPDATE SET points=excluded.points,scored_goals=excluded.scored_goals,conceded_goals=excluded.conceded_goals,clean_sheets=excluded.clean_sheets,difference_goals=excluded.difference_goals,sync_date=excluded.sync_date "
              )
         ) {
-            for( ClubStats clubStats : clubStatsToSave) {
+            for (ClubStats clubStats : clubStatsToSave) {
                 statement.setString(1, clubStats.getClub().getId());
-                statement.setString(2,clubStats.getSeason().getId());
-                statement.setInt(3,clubStats.getRankingPoints());
-                statement.setInt(4,clubStats.getScoredGoals());
-                statement.setInt(5,clubStats.getConcededGoals());
-                statement.setInt(6,clubStats.getCleanSheetNumber());
-                statement.setInt(7,clubStats.getDifferenceGoals());
+                statement.setString(2, clubStats.getSeason().getId());
+                statement.setInt(3, clubStats.getRankingPoints());
+                statement.setInt(4, clubStats.getScoredGoals());
+                statement.setInt(5, clubStats.getConcededGoals());
+                statement.setInt(6, clubStats.getCleanSheetNumber());
+                statement.setInt(7, clubStats.getDifferenceGoals());
                 statement.setTimestamp(8, Timestamp.from(clubStats.getSyncDate()));
             }
             int[] rs = statement.executeBatch();

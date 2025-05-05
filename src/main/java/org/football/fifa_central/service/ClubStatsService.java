@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service@RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class ClubStatsService {
 
     private final ClubStatsCrudOperations clubStatsCrudOperations;
@@ -19,7 +20,7 @@ public class ClubStatsService {
     public List<ClubStats> sync(Championship championship) {
         List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship.getApiUrl());
 
-       List<ClubStats> syncClubStats =  clubStatsCrudOperations.saveAll(clubStatsList);
+        List<ClubStats> syncClubStats = clubStatsCrudOperations.saveAll(clubStatsList);
 
 
         return syncClubStats;

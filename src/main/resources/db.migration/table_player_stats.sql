@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS player_stats (
     id varchar primary key ,
     player_id varchar,
-    season_id varchar,
+    season_id varchar unique,
     playing_time_id varchar,
     scored_goals bigint,
     sync_date timestamp

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.ClubMapper;
-import org.football.fifa_central.endpoint.rest.URL;
+import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Club;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -26,8 +26,8 @@ public class ClubCrudOperations {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ClubMapper clubMapper;
 
-    public List<Club> getAllFromApi(URL url) {
-        ResponseEntity<List<Club>> response = restTemplate.exchange(url.getUrl()+"/clubs", HttpMethod.GET,null,new ParameterizedTypeReference<List<Club>>() {});
+    public List<Club> getAllFromApi(Championship championship) {
+        ResponseEntity<List<Club>> response = restTemplate.exchange(championship.getApiUrl()+"/clubs", HttpMethod.GET,null,new ParameterizedTypeReference<List<Club>>() {});
         return response.getBody();
     }
     @SneakyThrows

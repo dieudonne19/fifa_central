@@ -5,7 +5,6 @@ import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.endpoint.rest.URL;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Club;
-import org.football.fifa_central.model.Player;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
