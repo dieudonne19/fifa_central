@@ -21,7 +21,7 @@ public class CentralService {
         List<Player> players = new ArrayList<>();
 
         this.urls.forEach(url -> {
-            List<Player> playersFromChampionship = playerService.getAll(url);
+            List<Player> playersFromChampionship = playerService.getAllFromExternalAPI(url);
             players.addAll(playersFromChampionship);
         });
 

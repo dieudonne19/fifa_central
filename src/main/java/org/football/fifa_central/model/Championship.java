@@ -13,7 +13,7 @@ import java.util.List;
 @ToString
 public class Championship {
     private String id;
-    private String name;
+    private ChampionshipName name;
     private String country;
     private String apiUrl;
 
