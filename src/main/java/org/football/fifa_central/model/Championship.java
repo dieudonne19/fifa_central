@@ -1,24 +1,23 @@
 package org.football.fifa_central.model;
 
-
 import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-@ToString
+@Getter
+@Data
 @EqualsAndHashCode
-public class Player {
+@ToString
+public class Championship {
     private String id;
     private String name;
     private String country;
-    private int age;
-    private int number;
+    private String apiUrl;
 
-    private List<PlayerStats> playerStats;
-    private Championship championship;
-    private Positions position;
+    private List<Club> clubs;
+    private List<Player> players;
+    private List<Season> seasons;
 }
