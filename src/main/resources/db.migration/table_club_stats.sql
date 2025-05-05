@@ -1,13 +1,14 @@
+DROP TABLE IF EXISTS club_stats;
+
 CREATE TABLE club_stats(
-    id varchar primary key ,
-    club_id varchar,
+    club_id varchar references club(id),
+    season_id varchar references season(id),
     points int,
     scored_goals int,
     conceded_goals int,
     clean_sheets int,
-    season_id varchar,
+    difference_goals int,
     sync_date timestamp,
-    CONSTRAINT club_fk FOREIGN KEY (club_id) REFERENCES club(id),
-    CONSTRAINT season_fk FOREIGN KEY (season_id) REFERENCES season(id)
-
+    CONSTRAINT season_fk FOREIGN KEY (season_id) REFERENCES season(id),
+    PRIMARY KEY (club_id,season_id)
 )

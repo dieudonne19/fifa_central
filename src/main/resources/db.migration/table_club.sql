@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS club;
+
 CREATE TABLE club
 (
     id            varchar      not null primary key,
@@ -8,5 +10,6 @@ CREATE TABLE club
     championship_id varchar ,
     coach_name varchar,
     sync_date timestamp,
-    CONSTRAINT ch_fk FOREIGN KEY  (championship_id) REFERENCES championship(id)
+    CONSTRAINT ch_fk FOREIGN KEY  (championship_id) REFERENCES championship(id),
+    CONSTRAINT coach_fk FOREIGN KEY (coach_name) REFERENCES coach(coach_name)
 );
