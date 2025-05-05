@@ -37,7 +37,8 @@ public class SynchronizationService {
         List<Championship> championships = championshipCrudOperations.getAll();
         List<Club> synchronizedClubs = new ArrayList<>();
         for (Championship championship : championships) {
-           synchronizedClubs.addAll(clubService.sync(championship.getApiUrl()));
+            System.out.println(clubService.sync(championship));
+           synchronizedClubs.addAll(clubService.sync(championship));
         }
         if (synchronizedClubs.size() > 0) {
             return ResponseEntity.ok(synchronizedClubs);

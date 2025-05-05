@@ -15,13 +15,13 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class ChampionshipMapper implements Function<ResultSet, Championship> {
-    private final PlayerCrudOperations playerCrudOperations;
+  //  private final PlayerCrudOperations playerCrudOperations;
 
     @Override
     @SneakyThrows
     public Championship apply(ResultSet resultSet) {
         String championshipId = resultSet.getString("id");
-        List<Player> players = playerCrudOperations.getManyByChampionshipId(championshipId);
+      //  List<Player> players = playerCrudOperations.getManyByChampionshipId(championshipId);
 
         Championship championship = new Championship();
 
@@ -31,7 +31,7 @@ public class ChampionshipMapper implements Function<ResultSet, Championship> {
         championship.setApiUrl(resultSet.getString("api_url"));
 
         // championship.setClubs();
-        championship.setPlayers(players);
+      //  championship.setPlayers(players);
         // championship.setSeasons();
 
         return championship;

@@ -11,9 +11,9 @@ public class synchronizationController {
     private final SynchronizationService synchronizationService;
 
 
-    @GetMapping("/players")
+    @GetMapping("/synchronisation")
     public Object getAllPlayersFromChampionships() {
-        return synchronizationService.getAllPlayersFromChampionships();
+        return synchronizationService.synchronize();
     }
 
 }

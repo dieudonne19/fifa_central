@@ -28,5 +28,22 @@ public class CoachCrudOperation {
         }
         return coach;
     }
-
+    @SneakyThrows
+    public Coach save(Coach coach){
+        Coach savedCoach = null;
+        try(
+                Connection conn = dataSource.getConnection();
+                PreparedStatement statement = conn.prepareStatement("INSERT INTO coach (coach_name, nationality) VALUES (?,?) ON CONFLICT (coach_name) do nothing " +
+                        "RETURNING coach_name, nationality");
+                ){
+            statement.setString(1, coach.getName());
+            statement.setString(2, coach.getNationality());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    savedCoach = new Coach(resultSet.getString("coach_name"), resultSet.getString("nationality"));
+                }
+            }
+        }
+        return savedCoach;
+    }
 }

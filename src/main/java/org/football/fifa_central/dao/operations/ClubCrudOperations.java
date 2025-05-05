@@ -25,20 +25,23 @@ public class ClubCrudOperations {
     private final DataSource dataSource;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ClubMapper clubMapper;
+    private final CoachCrudOperation coachCrudOperation;
 
-    public List<Club> getAllFromApi(URL url) {
-        ResponseEntity<List<Club>> response = restTemplate.exchange(url.getUrl()+"/clubs", HttpMethod.GET,null,new ParameterizedTypeReference<List<Club>>() {});
+    public List<Club> getAllFromApi(String url) {
+        ResponseEntity<List<Club>> response = restTemplate.exchange(url+"clubs", HttpMethod.GET,null,new ParameterizedTypeReference<List<Club>>() {});
         return response.getBody();
     }
     @SneakyThrows
     public List<Club> saveAll(List<Club> clubs) {
+        System.out.println("clubs "+clubs);
         //List<Club> savedClubs = new ArrayList<>();
         try(
                 Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO club(id, name, year_creation, acronym, stadium, championship_id, coach_name, sync_date) values (?,?,?,?,?,?,?,?) " +
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO club (id, name, year_creation, acronym, stadium, championship_id, coach_name, sync_date) values (?,?,?,?,?,?,?,?) " +
                         "ON CONFLICT (id) DO UPDATE set name=excluded.name , year_creation=excluded.year_creation,acronym=excluded.acronym,stadium=excluded.stadium,championship_id=excluded.championship_id,coach_name=excluded.coach_name ,sync_date=excluded.sync_date ")
                 ){
             for(Club club : clubs){
+                coachCrudOperation.save(club.getCoach());
                 preparedStatement.setString(1, club.getId());
                 preparedStatement.setString(2, club.getName());
                 preparedStatement.setString(3,club.getYearCreation().toString());
@@ -49,9 +52,11 @@ public class ClubCrudOperations {
                 preparedStatement.setTimestamp(8, Timestamp.from(club.getSync_date()));
                 preparedStatement.addBatch();
             }
-            preparedStatement.executeBatch();
-
-            return clubs;
+            int[] rs = preparedStatement.executeBatch(); // Batch 💥
+            if (rs.length != clubs.size()) {
+                return clubs;
+            }
+            return null;
         }
     }
 

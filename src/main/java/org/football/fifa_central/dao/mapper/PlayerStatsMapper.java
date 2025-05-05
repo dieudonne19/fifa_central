@@ -15,19 +15,19 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class PlayerStatsMapper implements Function<ResultSet, PlayerStats> {
-    private final PlayerCrudOperations playerCrudOperations;
+    //private final PlayerCrudOperations playerCrudOperations;
     private final PlayingTimeCrudOperations playingTimeCrudOperations;
 
     @Override
     @SneakyThrows
     public PlayerStats apply(ResultSet resultSet) {
-        Player player = playerCrudOperations.getById(resultSet.getString("player_id"));
+       // Player player = playerCrudOperations.getById(resultSet.getString("player_id"));
         PlayingTime playingTime = playingTimeCrudOperations.getById(resultSet.getString("playing_time_id"));
 
         PlayerStats playerStats = new PlayerStats();
 
         playerStats.setId(resultSet.getString("id"));
-        playerStats.setPlayer(player);
+      //  playerStats.setPlayer(player);
         playerStats.setPlayingTime(playingTime);
         // playerStats.setSeason();
         playerStats.setScoredGoals(resultSet.getInt("scored_goals"));

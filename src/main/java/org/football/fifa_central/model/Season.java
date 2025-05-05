@@ -9,4 +9,5 @@ public class Season {
     private String id;
     private Year year;
     private String alias;
+    private Championship championship;
 }
