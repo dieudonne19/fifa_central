@@ -14,10 +14,10 @@ import java.util.List;
 public class Championship {
     private String id;
     private ChampionshipName name;
-    private String country;
+    // private String country;
     private String apiUrl;
     private String apiKey;
     private List<Club> clubs;
-    private List<Player> players;
+    // private List<Player> players;
     private List<Season> seasons;
 }

@@ -36,6 +36,7 @@ public class SeasonCrudOperations {
 
 
         ResponseEntity<List<Season>> response = restTemplate.exchange(championship.getApiUrl()+ "seasons", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Season>>() {
+
         });
         // System.out.println("seasons "+response.getBody());
 
@@ -56,9 +57,8 @@ public class SeasonCrudOperations {
                 statement.addBatch();
             }
             int[] rs = statement.executeBatch();
-            if (Arrays.stream(rs).filter(value -> value != 0).toArray().length > 0) {
-                System.out.println("One of entries failed " + rs.length);
-
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed in season");
                 return null;
             }
             return seasons;

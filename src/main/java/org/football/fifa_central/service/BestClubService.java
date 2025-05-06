@@ -23,11 +23,25 @@ public class BestClubService {
         List<ClubStats> clubStatsList = clubStatsCrudOperations.getAll();
 
         List<ClubStats> sortedStats = clubStatsList.stream().sorted(Comparator.comparingInt(ClubStats::getRankingPoints).reversed()
-                .thenComparing(Comparator.comparingInt(ClubStats::getDifferenceGoals).reversed()
-                        .thenComparing(Comparator.comparingInt(ClubStats::getCleanSheetNumber).reversed())))
+                        .thenComparing(Comparator.comparingInt(ClubStats::getDifferenceGoals).reversed()
+                                .thenComparing(Comparator.comparingInt(ClubStats::getCleanSheetNumber).reversed())))
                 .limit(top).toList();
 
         return ResponseEntity.ok(sortedStats);
+
+    }
+
+    public List<ClubStats> getBestClubsForUse(int top) {
+
+        List<ClubStats> clubStatsList = clubStatsCrudOperations.getAll();
+
+        List<ClubStats> sortedStats = clubStatsList.stream()
+                .sorted(Comparator.comparingInt(ClubStats::getRankingPoints).reversed()
+                        .thenComparing(Comparator.comparingInt(ClubStats::getDifferenceGoals).reversed()
+                                .thenComparing(Comparator.comparingInt(ClubStats::getCleanSheetNumber).reversed())))
+                .limit(top).toList();
+
+        return sortedStats;
 
     }
 }

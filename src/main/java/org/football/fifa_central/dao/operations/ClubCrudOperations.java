@@ -85,11 +85,8 @@ public class ClubCrudOperations {
                 preparedStatement.addBatch();
             }
             int[] rs = preparedStatement.executeBatch(); // Batch 💥
-            if (Arrays.stream(rs).filter(value -> value != 1).toArray().length > 0) {
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
                 System.out.println("One of entries failed");
-                for (int r : rs) {
-                    System.out.println(r);
-                }
                 return null;
             }
             return clubs;
@@ -103,6 +100,25 @@ public class ClubCrudOperations {
                 Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement("SELECT id, name, year_creation, acronym, stadium, championship_id, coach_name, sync_date FROM club");
         ) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Club club = clubMapper.apply(resultSet);
+                    clubs.add(club);
+                }
+            }
+        }
+        return clubs;
+    }
+
+    @SneakyThrows
+    public List<Club> getAllByChampionshipId(String championshipId) {
+        List<Club> clubs = new ArrayList<>();
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT id, name, year_creation, acronym, stadium, championship_id, coach_name, sync_date"
+                        + " FROM club where championship_id = ?;");
+        ) {
+            statement.setString(1, championshipId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Club club = clubMapper.apply(resultSet);

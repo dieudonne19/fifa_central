@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,11 @@ public class PlayerService {
     }
 
     public ResponseEntity<Object> getBestPlayerFromAllChampionship(Integer top, DurationUnit playingTimeUnit) {
+        Stream<DurationUnit> durationUnits = Arrays.stream(DurationUnit.values());
+        if (durationUnits.noneMatch(durationUnit -> durationUnit.equals(playingTimeUnit))) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid playingTimeUnit.");
+        }
+
         List<PlayerStats> playerStats = playerStatisticsCrudOperations.getAllFromDB().stream()
                 .sorted(Comparator.comparing(PlayerStats::getScoredGoals))
                 .map(pls -> {
@@ -96,7 +102,7 @@ public class PlayerService {
         });
         playerStatsHavingSameGoals.sort(Comparator.comparing(pls -> pls.getPlayingTime().getValue()));
 
-        List<PlayerStats> combinedPlayerStats = new ArrayList<>(playerStatsScoredGoals);
+        List<PlayerStats> combinedPlayerStats = new ArrayList<>(playerStatsScoredGoals.reversed());
         combinedPlayerStats.addAll(playerStatsHavingSameGoals.reversed());
 
         combinedPlayerStats.forEach(pls -> {
@@ -115,6 +121,9 @@ public class PlayerService {
         List<BestPlayer> confirmedBestPlayers = bestPlayers.stream()
                 .filter(bestPlayer -> bestPlayer.getPlayingTime().getUnit().equals(playingTimeUnit))
                 .toList();
+
+        System.out.println(playerStatsScoredGoals.stream().map(PlayerStats::getScoredGoals).toList());
+        System.out.println(playerStatsHavingSameGoals.stream().map(PlayerStats::getScoredGoals).toList());
 
         if (confirmedBestPlayers.isEmpty()) {
             return ResponseEntity.ok(bestPlayers);
