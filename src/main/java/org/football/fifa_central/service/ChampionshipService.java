@@ -60,8 +60,8 @@ public class ChampionshipService {
 
             int medianValue = 0;
             if (clubsDifferenceGoals.size() % 2 != 0) {
-                int idx = clubsDifferenceGoals.size() / 2;
-                medianValue = clubsDifferenceGoals.get(idx);
+                int idx = (clubsDifferenceGoals.size() - 1) / 2;
+                medianValue = clubsDifferenceGoals.get(idx + 1);
 
             } else {
                 int firstIdx = clubsDifferenceGoals.size() / 2;

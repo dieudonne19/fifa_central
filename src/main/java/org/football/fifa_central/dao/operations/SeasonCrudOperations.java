@@ -39,7 +39,7 @@ public class SeasonCrudOperations {
     public List<Season> saveAll(List<Season> seasons) {
         try (
                 Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO season (id, year, championship_id, alias) VALUES (?,?,?,?) on conflict (id) do nothing ")
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO season (id, year, championship_id, alias) VALUES (?,?,?,?) on conflict (id) do update set year=excluded.year")
         ) {
             for (Season season : seasons) {
                 statement.setString(1, season.getId());

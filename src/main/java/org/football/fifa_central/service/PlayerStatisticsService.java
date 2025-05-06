@@ -45,17 +45,17 @@ public class PlayerStatisticsService {
         List<PlayerStats> playerStats = new ArrayList<>();
         players.forEach(player -> {
 
-            PlayerStats pls = this.getFromExternalAPI(championship, player.getId(), season.getYear());
+            if (player.getChampionship().getName().equals(championship.getName())) {
+                PlayerStats pls = this.getFromExternalAPI(championship, player.getId(), season.getYear());
+                pls.setSeason(season);
+                PlayingTime playingTime = pls.getPlayingTime();
+                pls.setPlayingTime(playingTime);
+                pls.setPlayer(player);
+                playingTime.setId("PT-" + player.getId());
 
-            PlayingTime playingTime = pls.getPlayingTime();
-            playingTime.setId("PT-" + player.getId());
-
-            playingTimeCrudOperations.saveAll(List.of(playingTime));
-
-            pls.setSeason(season);
-            pls.setPlayingTime(playingTime);
-            pls.setPlayer(player);
-            playerStats.add(pls);
+                playerStats.add(pls);
+                playingTimeCrudOperations.saveAll(List.of(playingTime));
+            }
         });
 
         List<PlayerStats> savedPlayerStats = this.saveAll(playerStats);
