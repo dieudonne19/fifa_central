@@ -29,27 +29,30 @@ public class SynchronizationService {
         List<ClubStats> synchronizedClubStats = new ArrayList<>();
         List<Season> synchronizedSeasons = new ArrayList<>();
         List<Player> synchronizedPlayers = new ArrayList<>();
-        List<PlayerStats> synchronizedPlayersStats = new ArrayList<>();
-
-
+        List<PlayerStats> synchronizedPlayerStats = new ArrayList<>();
         for (Championship championship : championships) {
-            synchronizedClubs.addAll(clubService.sync(championship));
-            synchronizedSeasons.addAll(seasonService.sync(championship));
-            synchronizedPlayers.addAll(playerService.synchronize(championship));
+             synchronizedClubs.addAll(clubService.sync(championship));
+             synchronizedSeasons.addAll(seasonService.sync(championship));
+             synchronizedPlayers.addAll(playerService.synchronize(championship));
+             synchronizedSeasons.forEach(season -> {
+            synchronizedClubStats.addAll(clubStatsService.sync(championship,season));
+             });
 
-
-            synchronizedSeasons.forEach(season -> {
-                synchronizedClubStats.addAll(clubStatsService.sync(championship, season));
-                synchronizedPlayersStats.addAll(playerStatisticsService.synchronize(championship, synchronizedPlayers, season));
-            });
         }
+        for (Championship championship : championships) {
+             synchronizedSeasons.forEach(season -> {
+           synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship,synchronizedPlayers,season));
+             });
+        }
+
         if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats != null) {
             return ResponseEntity.ok(List.of(
                     synchronizedClubs,
                     synchronizedClubStats,
                     synchronizedSeasons,
                     synchronizedPlayers,
-                    synchronizedPlayersStats));
+                    synchronizedPlayerStats));
+
         }
         return ResponseEntity.internalServerError().body("internal server error");
     }

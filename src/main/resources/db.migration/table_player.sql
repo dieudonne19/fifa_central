@@ -19,5 +19,6 @@ CREATE TABLE IF NOT EXISTS player
     age              int,
     championship_id  varchar,
     club_id          varchar,
-    sync_date        timestamp
+    sync_date        timestamp,
+    unique (number,club_id)
 );

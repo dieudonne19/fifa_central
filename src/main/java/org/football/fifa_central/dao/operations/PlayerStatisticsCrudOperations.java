@@ -7,6 +7,7 @@ import org.football.fifa_central.dao.mapper.PlayerStatsMapper;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
+import org.football.fifa_central.model.PlayingTime;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class PlayerStatisticsCrudOperations {
     private final DataSource dataSource;
     private final RestTemplate restTemplate = new RestTemplate();
     private final PlayerStatsMapper playerStatsMapper;
+    private final PlayingTimeCrudOperations playingTimeCrudOperations;
 
     public PlayerStats getFromExternalAPI(Championship championship, String playerId, Year seasonYear) {
         ResponseEntity<PlayerStats> response = restTemplate.exchange(
