@@ -138,11 +138,9 @@ public class PlayerStatisticsCrudOperations {
 
                 statement.setString(1, id);
                 statement.setString(2, p.getPlayer().getId());
-                // statement.setString(3, p.getSeason().getId());
                 statement.setString(3, p.getSeason().getId());
-             List<PlayingTime> playingTimes =   playingTimeCrudOperations.saveAll(List.of(new PlayingTime(UUID.randomUUID().toString(),p.getPlayingTime().getValue(),p.getPlayingTime().getUnit())));
-                statement.setString(4,playingTimes.get(0).getId());
-
+                //statement.setString(3, UUID.randomUUID().toString());
+                statement.setString(4, p.getPlayingTime().getId());
                 statement.setLong(5, p.getScoredGoals());
                 statement.setTimestamp(6, Timestamp.from(p.getSyncDate()));
 
