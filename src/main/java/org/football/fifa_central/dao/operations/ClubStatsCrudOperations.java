@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.ClubStatsDtoMapper;
+import org.football.fifa_central.dao.mapper.ClubStatsMapper;
 import org.football.fifa_central.dao.operations.DTO.ClubStatsDto;
 import org.football.fifa_central.model.ClubStats;
 import org.football.fifa_central.model.Season;
@@ -16,8 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +31,7 @@ public class ClubStatsCrudOperations {
     private final DataSource dataSource;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ClubStatsDtoMapper clubStatsDtoMapper;
+    private final ClubStatsMapper clubStatsMapper;
 
     public List<ClubStats> getClubStatsFromApi(String apiUrl, Season season) {
         ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl + "/clubs/statistics/" + season.getYear(), HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
@@ -64,5 +68,21 @@ public class ClubStatsCrudOperations {
         }
     }
 
+    @SneakyThrows
+    public List<ClubStats> getAll() {
+        List<ClubStats> clubStats = new ArrayList<>();
+        try(
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("select club_id, season_id, points, scored_goals, conceded_goals, clean_sheets, difference_goals, sync_date from club_stats")
+                ){
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()){
 
+                ClubStats clubStat = clubStatsMapper.apply(rs);
+                clubStats.add(clubStat);
+                }
+            }
+        }
+        return clubStats;
+    }
 }

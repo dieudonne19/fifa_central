@@ -12,11 +12,11 @@ import java.time.Instant;
 @ToString
 public class ClubStats {
     private Club club;
-    private int rankingPoints;
-    private int scoredGoals;
-    private int concededGoals;
-    private int differenceGoals;
-    private int cleanSheetNumber;
+    private Integer rankingPoints;
+    private Integer scoredGoals;
+    private Integer concededGoals;
+    private Integer differenceGoals;
+    private Integer cleanSheetNumber;
     private Season season;
     private Instant syncDate;
 }

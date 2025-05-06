@@ -95,4 +95,20 @@ public class SeasonCrudOperations {
         }
         return season;
     }
+    @SneakyThrows
+    public Season getById(String seasonId) {
+        Season season = null;
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT id, year, championship_id, alias FROM season where id=?")
+        ) {
+            statement.setString(1, seasonId);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    season = seasonMapper.apply(rs);
+                }
+            }
+        }
+        return season;
+    }
 }

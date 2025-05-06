@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class synchronizationController {
+public class SynchronizationController {
     private final SynchronizationService synchronizationService;
     private final PlayerService playerService;
 
