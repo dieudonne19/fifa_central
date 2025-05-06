@@ -21,6 +21,7 @@ public class CoachCrudOperation {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT coach_name, nationality FROM coach WHERE coach_name = ?");
         ) {
+            preparedStatement.setString(1, name);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     coach = new Coach(resultSet.getString("coach_name"), resultSet.getString("nationality"));

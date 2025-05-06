@@ -16,7 +16,7 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class PlayerMapper implements Function<ResultSet, Player> {
-
+    private final ChampionshipCrudOperations championshipCrudOperations;
     private final ClubCrudOperations clubCrudOperations;
 
     @SneakyThrows
@@ -24,6 +24,7 @@ public class PlayerMapper implements Function<ResultSet, Player> {
     public Player apply(ResultSet resultSet) {
         String clubId = resultSet.getString("club_id");
         Club club = clubCrudOperations.getById(clubId);
+        Championship championship = championshipCrudOperations.getById(resultSet.getString("championship_id"));
 
         String playerId = resultSet.getString("id");
 
@@ -38,7 +39,7 @@ public class PlayerMapper implements Function<ResultSet, Player> {
 
         player.setClub(club);
         // player.setPlayerStats(); dans service (refactored)
-        // player.setChampionship(); dans service
+        player.setChampionship(championship);
         player.setSyncDate(resultSet.getTimestamp("sync_date").toInstant());
 
         return player;

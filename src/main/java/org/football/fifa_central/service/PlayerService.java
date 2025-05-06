@@ -1,9 +1,11 @@
 package org.football.fifa_central.service;
 
 import lombok.RequiredArgsConstructor;
+import org.football.fifa_central.dao.mapper.BestPlayerMapper;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerStatisticsCrudOperations;
+import org.football.fifa_central.model.BestPlayer;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
@@ -11,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,6 +24,7 @@ public class PlayerService {
     private final PlayerCrudOperations playerCrudOperations;
     private final ChampionshipCrudOperations championshipCrudOperations;
     private final PlayerStatisticsCrudOperations playerStatisticsCrudOperations;
+    private final BestPlayerMapper bestPlayerMapper;
 
     public List<Player> getAllFromExternalAPI(Championship championship) {
         List<Player> externalPlayers = playerCrudOperations.getAllFromExternalAPI(championship);
@@ -53,6 +59,28 @@ public class PlayerService {
         List<Player> playersSavedToCentral = playerCrudOperations.saveAll(externalPlayers);
 
         return playersSavedToCentral;
+    }
+
+    public ResponseEntity<Object> getBestPlayerFromAllChampionship() {
+        List<PlayerStats> playerStats = playerStatisticsCrudOperations.getAllFromDB().stream()
+                .sorted(Comparator.comparing(PlayerStats::getScoredGoals)).toList().reversed();
+
+        List<BestPlayer> bestPlayers = new ArrayList<>();
+
+        playerStats.forEach(pls -> {
+            String playerId = Arrays.stream(pls.getId().split("-")).toList().getLast();
+            Player player = playerCrudOperations.getById(playerId);
+
+            pls.setPlayer(player);
+
+            BestPlayer bestPlayer = bestPlayerMapper.apply(pls);
+
+            bestPlayer.setChampionship(player.getChampionship());
+
+            bestPlayers.add(bestPlayer);
+        });
+
+        return ResponseEntity.ok(bestPlayers);
     }
 
 

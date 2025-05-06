@@ -25,7 +25,7 @@ public class ClubMapper implements Function<ResultSet, Club> {
         Coach coach = coachCrudOperation.getByName(resultSet.getString("coach_name"));
         club.setId(resultSet.getString("id"));
         club.setName(resultSet.getString("name"));
-        club.setSync_date(Instant.parse(resultSet.getString("sync_date")));
+        club.setSync_date(resultSet.getTimestamp("sync_date").toInstant());
         club.setCoach(coach);
         club.setAcronym(resultSet.getString("acronym"));
         club.setStadium(resultSet.getString("stadium"));
