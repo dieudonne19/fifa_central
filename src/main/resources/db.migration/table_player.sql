@@ -13,11 +13,12 @@ CREATE TABLE IF NOT EXISTS player
 (
     id               varchar primary key,
     name             varchar(200),
-    number int unique,
+    number int ,
     position         positions,
     country          varchar,
     age              int,
     championship_id  varchar,
     club_id          varchar,
-    sync_date        timestamp
+    sync_date        timestamp,
+    unique (number,club_id)
 );

@@ -38,14 +38,24 @@ public class SynchronizationService {
         List<Club> synchronizedClubs = new ArrayList<>();
         List<ClubStats> synchronizedClubStats = new ArrayList<>();
         List<Season> synchronizedSeasons = new ArrayList<>();
+        List<Player> synchronizedPlayers = new ArrayList<>();
+        List<PlayerStats> synchronizedPlayerStats = new ArrayList<>();
         for (Championship championship : championships) {
              synchronizedClubs.addAll(clubService.sync(championship));
              synchronizedSeasons.addAll(seasonService.sync(championship));
+             synchronizedPlayers.addAll(playerService.synchronize(championship));
              synchronizedSeasons.forEach(season -> {
             synchronizedClubStats.addAll(clubStatsService.sync(championship,season));
+             });
 
+        }
+        for (Championship championship : championships) {
+             synchronizedSeasons.forEach(season -> {
+           synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship,synchronizedPlayers,season.getYear()));
              });
         }
+
+
         if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats !=null) {
             return ResponseEntity.ok(List.of(synchronizedClubs, synchronizedClubStats, synchronizedSeasons));
         }

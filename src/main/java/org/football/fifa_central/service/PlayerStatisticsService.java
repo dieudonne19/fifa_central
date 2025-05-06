@@ -2,6 +2,7 @@ package org.football.fifa_central.service;
 
 import lombok.RequiredArgsConstructor;
 import org.football.fifa_central.dao.operations.PlayerStatisticsCrudOperations;
+import org.football.fifa_central.dao.operations.SeasonCrudOperations;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
@@ -11,11 +12,13 @@ import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class PlayerStatisticsService {
     private final PlayerStatisticsCrudOperations playerStatisticsCrudOperations;
+    private final SeasonCrudOperations seasonCrudOperations;
 
     public PlayerStats getFromExternalAPI(Championship championship, String playerId, Year seasonYear) {
         PlayerStats externalPlayerStats = playerStatisticsCrudOperations.getFromExternalAPI(championship, playerId, seasonYear);
@@ -40,6 +43,10 @@ public class PlayerStatisticsService {
         players.forEach(player -> {
             PlayerStats pls = this.getFromExternalAPI(championship, player.getId(), seasonYear);
             // season mila settena
+            pls.setPlayer(player);
+            pls.setId(UUID.randomUUID().toString());
+            pls.setSyncDate(Instant.now());
+            pls.setSeason(seasonCrudOperations.getByYear(seasonYear));
             playerStats.add(pls);
         });
 

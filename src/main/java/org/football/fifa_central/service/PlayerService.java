@@ -30,6 +30,7 @@ public class PlayerService {
             player.setSyncDate(Instant.now());
             player.setPlayerStats(playerStats);
             player.setChampionship(championship);
+
             // club a setter
         });
         return externalPlayers;

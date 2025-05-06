@@ -7,6 +7,7 @@ import org.football.fifa_central.dao.mapper.PlayerStatsMapper;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
+import org.football.fifa_central.model.PlayingTime;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class PlayerStatisticsCrudOperations {
     private final DataSource dataSource;
     private final RestTemplate restTemplate = new RestTemplate();
     private final PlayerStatsMapper playerStatsMapper;
+    private final PlayingTimeCrudOperations playingTimeCrudOperations;
 
     public PlayerStats getFromExternalAPI(Championship championship, String playerId, Year seasonYear) {
         ResponseEntity<PlayerStats> response = restTemplate.exchange(
@@ -135,8 +137,9 @@ public class PlayerStatisticsCrudOperations {
                 statement.setString(1, p.getId());
                 statement.setString(2, p.getPlayer().getId());
                 // statement.setString(3, p.getSeason().getId());
-                statement.setString(3, UUID.randomUUID().toString());
-                statement.setString(4, p.getPlayingTime().getId());
+                statement.setString(3, p.getSeason().getId());
+             List<PlayingTime> playingTimes =   playingTimeCrudOperations.saveAll(List.of(new PlayingTime(UUID.randomUUID().toString(),p.getPlayingTime().getValue(),p.getPlayingTime().getUnit())));
+                statement.setString(4,playingTimes.get(0).getId());
                 statement.setLong(5, p.getScoredGoals());
                 statement.setTimestamp(6, Timestamp.from(p.getSyncDate()));
 
