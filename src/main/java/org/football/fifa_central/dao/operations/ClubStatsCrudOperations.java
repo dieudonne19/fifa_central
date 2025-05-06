@@ -39,7 +39,7 @@ public class ClubStatsCrudOperations {
     @SneakyThrows
     public List<ClubStats> saveAll(List<ClubStats> clubStatsToSave) {
         try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement("INSERT INTO club_stats ( club_id,season_id, points, scored_goals, conceded_goals, clean_sheets, difference_goals, sync_date) VALUES (?,?,?,?,?,?,?,?,?) " +
+             PreparedStatement statement = con.prepareStatement("INSERT INTO club_stats (club_id, season_id, points, scored_goals, conceded_goals, clean_sheets, difference_goals, sync_date) VALUES (?,?,?,?,?,?,?,?) " +
                      "ON CONFLICT (club_id,season_id) DO UPDATE SET points=excluded.points,scored_goals=excluded.scored_goals,conceded_goals=excluded.conceded_goals,clean_sheets=excluded.clean_sheets,difference_goals=excluded.difference_goals,sync_date=excluded.sync_date "
              )
         ) {
@@ -52,6 +52,7 @@ public class ClubStatsCrudOperations {
                 statement.setInt(6, clubStats.getCleanSheetNumber());
                 statement.setInt(7, clubStats.getDifferenceGoals());
                 statement.setTimestamp(8, Timestamp.from(clubStats.getSyncDate()));
+                statement.addBatch();
             }
             int[] rs = statement.executeBatch();
             if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
