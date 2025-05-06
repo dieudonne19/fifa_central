@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS player
 (
     id               varchar primary key,
     name             varchar(200),
-    number int unique,
+    number int ,
     position         positions,
     country          varchar,
     age              int,

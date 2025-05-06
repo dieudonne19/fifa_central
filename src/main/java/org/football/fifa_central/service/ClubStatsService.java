@@ -18,12 +18,12 @@ public class ClubStatsService {
     private final ClubStatsCrudOperations clubStatsCrudOperations;
 
     public List<ClubStats> sync(Championship championship, Season season) {
-        List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship.getApiUrl(),season);
-     //   List<Club> syncClubs = clubService.sync(championship);
+        List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship.getApiUrl(), season);
+        //   List<Club> syncClubs = clubService.sync(championship);
         clubStatsList.forEach(clubStats -> {
             clubStats.setSeason(season);
         });
-       List<ClubStats> syncClubStats =  clubStatsCrudOperations.saveAll(clubStatsList);
+        List<ClubStats> syncClubStats = clubStatsCrudOperations.saveAll(clubStatsList);
 
 
         return syncClubStats;

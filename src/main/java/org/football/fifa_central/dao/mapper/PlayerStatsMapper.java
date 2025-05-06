@@ -23,13 +23,14 @@ public class PlayerStatsMapper implements Function<ResultSet, PlayerStats> {
     public PlayerStats apply(ResultSet resultSet) {
        // Player player = playerCrudOperations.getById(resultSet.getString("player_id"));
         PlayingTime playingTime = playingTimeCrudOperations.getById(resultSet.getString("playing_time_id"));
+        String playerStatsTd = resultSet.getString("id");
 
         PlayerStats playerStats = new PlayerStats();
 
-        playerStats.setId(resultSet.getString("id"));
-      //  playerStats.setPlayer(player);
-        playerStats.setPlayingTime(playingTime);
+        playerStats.setId(playerStatsTd);
+        // playerStats.setPlayer(player);
         // playerStats.setSeason();
+        playerStats.setPlayingTime(playingTime);
         playerStats.setScoredGoals(resultSet.getInt("scored_goals"));
         playerStats.setSyncDate(resultSet.getTimestamp("sync_date").toInstant());
 

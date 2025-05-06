@@ -5,5 +5,5 @@ import lombok.*;
 @AllArgsConstructor@NoArgsConstructor@Setter@Getter@EqualsAndHashCode@ToString
 public class Coach {
     private String name;
-    private String nationality;
+    private String country;
 }

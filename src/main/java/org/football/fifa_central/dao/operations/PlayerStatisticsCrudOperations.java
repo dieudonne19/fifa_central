@@ -132,10 +132,12 @@ public class PlayerStatisticsCrudOperations {
                 PreparedStatement statement = conn.prepareStatement(sql)
         ) {
             for (PlayerStats p : entities) {
-                statement.setString(1, p.getId());
+                String id = p.getId() != null ? p.getId() : "STATS-" + p.getPlayer().getId() ;
+
+                statement.setString(1, id);
                 statement.setString(2, p.getPlayer().getId());
-                // statement.setString(3, p.getSeason().getId());
-                statement.setString(3, UUID.randomUUID().toString());
+                statement.setString(3, p.getSeason().getId());
+                //statement.setString(3, UUID.randomUUID().toString());
                 statement.setString(4, p.getPlayingTime().getId());
                 statement.setLong(5, p.getScoredGoals());
                 statement.setTimestamp(6, Timestamp.from(p.getSyncDate()));
