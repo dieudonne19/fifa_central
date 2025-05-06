@@ -7,8 +7,7 @@ import org.football.fifa_central.dao.mapper.PlayerMapper;
 import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Player;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,10 +24,17 @@ public class PlayerCrudOperations {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Player> getAllFromExternalAPI(Championship championship) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-KEY",championship.getApiKey());
+        headers.setAccept(List.of(new MediaType("application", "json")));
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
         ResponseEntity<List<Player>> response = restTemplate.exchange(
                 championship.getApiUrl() + "/players",
                 HttpMethod.GET,
-                null,
+                httpEntity,
                 new ParameterizedTypeReference<>() {
                 });
 

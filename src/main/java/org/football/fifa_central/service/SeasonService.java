@@ -16,7 +16,7 @@ public class SeasonService {
     private final SeasonCrudOperations seasonCrudOperations;
 
     public List<Season> sync(Championship championship) {
-        List<Season> seasonToSave = seasonCrudOperations.getSeasonsFromApi(championship.getApiUrl());
+        List<Season> seasonToSave = seasonCrudOperations.getSeasonsFromApi(championship);
         seasonToSave.forEach(season -> {
             season.setChampionship(championship);
         });

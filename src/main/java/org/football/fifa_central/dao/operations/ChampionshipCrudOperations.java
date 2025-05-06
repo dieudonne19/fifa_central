@@ -27,7 +27,7 @@ public class ChampionshipCrudOperations {
     public List<Championship> getAll() {
         List<Championship> championships = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url from championship")) {
+             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url,api_key from championship")) {
             /*
             statement.setInt(1, pageSize);
             statement.setInt(2, pageSize * (page - 1));
@@ -46,7 +46,7 @@ public class ChampionshipCrudOperations {
     public Championship getByName(ChampionshipName championshipName) {
         Championship championship = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url"
+             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url,api_key"
                      + " from championship where name = cast(? as championship_name);"
              )) {
             statement.setString(1, championshipName.name());
@@ -66,7 +66,7 @@ public class ChampionshipCrudOperations {
     public Championship getById(String id) {
         Championship championship = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url"
+             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url,api_key"
                      + " from championship where id = ?;"
              )) {
             statement.setString(1, id);
@@ -86,7 +86,7 @@ public class ChampionshipCrudOperations {
     public Championship getByApiURL(String apiURL) {
         Championship championship = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url"
+             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url , api_key"
                      + " from championship where api_url = ?;"
              )) {
             statement.setString(1, apiURL);
@@ -106,9 +106,9 @@ public class ChampionshipCrudOperations {
     public List<Championship> saveAll(List<Championship> entities) {
         List<Championship> savedChampionships = new ArrayList<>();
 
-        String sql = "INSERT INTO championship(id, name, country, api_url)"
-                + " VALUES (?, cast(? as championship_name), ?, ?)"
-                + " ON CONFLICT (id) DO UPDATE SET name=excluded.name, country=excluded.country, api_url=excluded.api_url";
+        String sql = "INSERT INTO championship(id, name, country, api_url,api_key)"
+                + " VALUES (?, cast(? as championship_name), ?, ?,?)"
+                + " ON CONFLICT (id) DO UPDATE SET name=excluded.name, country=excluded.country, api_url=excluded.api_url ,api_key=excluded.api_key";
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement statement = conn.prepareStatement(sql)
@@ -118,7 +118,7 @@ public class ChampionshipCrudOperations {
                 statement.setString(2, championship.getName().toString());
                 // statement.setString(3, championship.getCountry());
                 statement.setString(4, championship.getApiUrl());
-
+                statement.setString(5, championship.getApiKey());
                 statement.addBatch();
             }
 

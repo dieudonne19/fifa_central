@@ -9,8 +9,7 @@ import org.football.fifa_central.model.Player;
 import org.football.fifa_central.model.PlayerStats;
 import org.football.fifa_central.model.PlayingTime;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,10 +32,17 @@ public class PlayerStatisticsCrudOperations {
     private final PlayingTimeCrudOperations playingTimeCrudOperations;
 
     public PlayerStats getFromExternalAPI(Championship championship, String playerId, Year seasonYear) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-KEY",championship.getApiKey());
+        headers.setAccept(List.of(new MediaType("application", "json")));
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
         ResponseEntity<PlayerStats> response = restTemplate.exchange(
                 championship.getApiUrl() + "/players/" + playerId + "/statistics/" + seasonYear,
                 HttpMethod.GET,
-                null,
+                httpEntity,
                 new ParameterizedTypeReference<>() {
                 });
 
