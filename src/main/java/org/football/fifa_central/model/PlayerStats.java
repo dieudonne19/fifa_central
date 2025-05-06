@@ -14,7 +14,7 @@ import java.time.Instant;
 @ToString
 public class PlayerStats {
     private String id;
-    private long scoredGoals;
+    private int scoredGoals;
     private Instant syncDate;
 
     private Player player;

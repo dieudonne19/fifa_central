@@ -30,7 +30,7 @@ public class ClubStatsCrudOperations {
     private final ClubStatsDtoMapper clubStatsDtoMapper;
 
     public List<ClubStats> getClubStatsFromApi(String apiUrl, Season season) {
-        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl+"clubs/statistics/"+season.getYear().toString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
+        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl + "/clubs/statistics/" + season.getYear(), HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
         });
         List<ClubStats> clubStats = response.getBody().stream().map(clubStatsDto -> clubStatsDtoMapper.toModel(clubStatsDto)).toList();
         return clubStats;
@@ -54,8 +54,8 @@ public class ClubStatsCrudOperations {
                 statement.setTimestamp(8, Timestamp.from(clubStats.getSyncDate()));
             }
             int[] rs = statement.executeBatch();
-            if (Arrays.stream(rs).filter(value -> value != 1).toArray().length > 0) {
-                System.out.println("One of entries failed");
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed in clu stats");
                 return null;
             }
             return clubStatsToSave;

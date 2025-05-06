@@ -9,18 +9,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service@RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class SeasonService {
 
     private final SeasonCrudOperations seasonCrudOperations;
 
     public List<Season> sync(Championship championship) {
-     List<Season> seasonToSave =    seasonCrudOperations.getSeasonsFromApi(championship.getApiUrl());
-     seasonToSave.forEach(season -> {
-         season.setChampionship(championship);
-     });
-          List<Season> savedSeason =  seasonCrudOperations.saveAll(seasonToSave);
-          return savedSeason;
+        List<Season> seasonToSave = seasonCrudOperations.getSeasonsFromApi(championship.getApiUrl());
+        seasonToSave.forEach(season -> {
+            season.setChampionship(championship);
+        });
+        List<Season> savedSeason = seasonCrudOperations.saveAll(seasonToSave);
+        return savedSeason;
     }
 
 }

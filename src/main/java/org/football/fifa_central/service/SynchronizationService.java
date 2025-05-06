@@ -22,19 +22,9 @@ public class SynchronizationService {
     private final PlayerStatisticsService playerStatisticsService;
 
 
-   /* public ResponseEntity<Object> getAllPlayersFromChampionships() {
-        List<Player> players = new ArrayList<>();
-
-        this.urls.forEach(url -> {
-            List<Player> playersFromChampionship = playerService.getAllFromExternalAPI(url);
-            players.addAll(playersFromChampionship);
-        });
-
-        return ResponseEntity.ok(players);
-    }*/
-
     public ResponseEntity<Object> synchronize() {
         List<Championship> championships = championshipCrudOperations.getAll();
+
         List<Club> synchronizedClubs = new ArrayList<>();
         List<ClubStats> synchronizedClubStats = new ArrayList<>();
         List<Season> synchronizedSeasons = new ArrayList<>();
@@ -51,13 +41,18 @@ public class SynchronizationService {
         }
         for (Championship championship : championships) {
              synchronizedSeasons.forEach(season -> {
-           synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship,synchronizedPlayers,season.getYear()));
+           synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship,synchronizedPlayers,season));
              });
         }
 
+        if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats != null) {
+            return ResponseEntity.ok(List.of(
+                    synchronizedClubs,
+                    synchronizedClubStats,
+                    synchronizedSeasons,
+                    synchronizedPlayers,
+                    synchronizedPlayerStats));
 
-        if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats !=null) {
-            return ResponseEntity.ok(List.of(synchronizedClubs, synchronizedClubStats, synchronizedSeasons));
         }
         return ResponseEntity.internalServerError().body("internal server error");
     }

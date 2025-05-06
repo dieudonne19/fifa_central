@@ -9,19 +9,20 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
-@Service@RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class ClubService {
 
     private final ClubCrudOperations clubCrudOperations;
 
-    public List<Club> sync(Championship championship){
+    public List<Club> sync(Championship championship) {
 
         List<Club> clubs = clubCrudOperations.getAllFromApi(championship.getApiUrl());
         clubs.forEach(club -> {
             club.setSync_date(Instant.now());
             club.setChampionship(championship);
         });
-      List<Club> synchronizedClub =  clubCrudOperations.saveAll(clubs);
+        List<Club> synchronizedClub = clubCrudOperations.saveAll(clubs);
         return synchronizedClub;
 
     }

@@ -38,7 +38,7 @@ public class CoachCrudOperation {
                         "RETURNING coach_name, nationality");
                 ){
             statement.setString(1, coach.getName());
-            statement.setString(2, coach.getNationality());
+            statement.setString(2, coach.getCountry());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     savedCoach = new Coach(resultSet.getString("coach_name"), resultSet.getString("nationality"));
