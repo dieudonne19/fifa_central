@@ -18,7 +18,7 @@ public class ClubStatsService {
     private final ClubStatsCrudOperations clubStatsCrudOperations;
 
     public List<ClubStats> sync(Championship championship, Season season) {
-        List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship.getApiUrl(), season);
+        List<ClubStats> clubStatsList = clubStatsCrudOperations.getClubStatsFromApi(championship, season);
         //   List<Club> syncClubs = clubService.sync(championship);
         clubStatsList.forEach(clubStats -> {
             clubStats.setSeason(season);

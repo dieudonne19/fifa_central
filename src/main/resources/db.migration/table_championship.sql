@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS championship (
     id varchar PRIMARY KEY,
     name championship_name unique,
     country varchar,
-    api_url varchar
+    api_url varchar,
+    api_key varchar
 );

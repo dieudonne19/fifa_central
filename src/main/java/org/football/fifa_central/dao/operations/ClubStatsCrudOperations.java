@@ -7,11 +7,11 @@ import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.ClubStatsDtoMapper;
 import org.football.fifa_central.dao.mapper.ClubStatsMapper;
 import org.football.fifa_central.dao.operations.DTO.ClubStatsDto;
+import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.ClubStats;
 import org.football.fifa_central.model.Season;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,8 +33,16 @@ public class ClubStatsCrudOperations {
     private final ClubStatsDtoMapper clubStatsDtoMapper;
     private final ClubStatsMapper clubStatsMapper;
 
-    public List<ClubStats> getClubStatsFromApi(String apiUrl, Season season) {
-        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(apiUrl + "/clubs/statistics/" + season.getYear(), HttpMethod.GET, null, new ParameterizedTypeReference<List<ClubStatsDto>>() {
+    public List<ClubStats> getClubStatsFromApi(Championship championship,Season season) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-KEY",championship.getApiKey());
+        headers.setAccept(List.of(new MediaType("application", "json")));
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+
+        ResponseEntity<List<ClubStatsDto>> response = restTemplate.exchange(championship.getApiUrl()+ "/clubs/statistics/" + season.getYear(), HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<ClubStatsDto>>() {
         });
         List<ClubStats> clubStats = response.getBody().stream().map(clubStatsDto -> clubStatsDtoMapper.toModel(clubStatsDto)).toList();
         return clubStats;

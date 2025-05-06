@@ -16,7 +16,7 @@ public class Championship {
     private ChampionshipName name;
     private String country;
     private String apiUrl;
-
+    private String apiKey;
     private List<Club> clubs;
     private List<Player> players;
     private List<Season> seasons;

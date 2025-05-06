@@ -17,7 +17,7 @@ public class ClubService {
 
     public List<Club> sync(Championship championship) {
 
-        List<Club> clubs = clubCrudOperations.getAllFromApi(championship.getApiUrl());
+        List<Club> clubs = clubCrudOperations.getAllFromApi(championship);
         clubs.forEach(club -> {
             club.setSync_date(Instant.now());
             club.setChampionship(championship);

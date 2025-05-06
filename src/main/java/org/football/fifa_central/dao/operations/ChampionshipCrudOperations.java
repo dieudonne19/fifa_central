@@ -27,7 +27,7 @@ public class ChampionshipCrudOperations {
     public List<Championship> getAll() {
         List<Championship> championships = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url from championship")) {
+             PreparedStatement statement = connection.prepareStatement("select id, name, country, api_url,api_key from championship")) {
             /*
             statement.setInt(1, pageSize);
             statement.setInt(2, pageSize * (page - 1));

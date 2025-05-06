@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.football.fifa_central.dao.DataSource;
 import org.football.fifa_central.dao.mapper.SeasonMapper;
+import org.football.fifa_central.model.Championship;
 import org.football.fifa_central.model.Season;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +27,15 @@ public class SeasonCrudOperations {
     private final RestTemplate restTemplate = new RestTemplate();
     private final SeasonMapper seasonMapper;
 
-    public List<Season> getSeasonsFromApi(String apiUrl) {
-        ResponseEntity<List<Season>> response = restTemplate.exchange(apiUrl + "seasons", HttpMethod.GET, null, new ParameterizedTypeReference<List<Season>>() {
+    public List<Season> getSeasonsFromApi(Championship championship) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-KEY",championship.getApiKey());
+        headers.setAccept(List.of(new MediaType("application", "json")));
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+
+        ResponseEntity<List<Season>> response = restTemplate.exchange(championship.getApiUrl()+ "seasons", HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<Season>>() {
         });
         // System.out.println("seasons "+response.getBody());
 

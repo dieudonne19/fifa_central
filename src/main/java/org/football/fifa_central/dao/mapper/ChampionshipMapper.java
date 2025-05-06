@@ -29,7 +29,7 @@ public class ChampionshipMapper implements Function<ResultSet, Championship> {
         championship.setName(ChampionshipName.valueOf(resultSet.getString("name")));
         championship.setCountry(resultSet.getString("country"));
         championship.setApiUrl(resultSet.getString("api_url"));
-
+    championship.setApiKey(resultSet.getString("api_key"));
         // championship.setClubs();
         // championship.setSeasons();
         // championship.setPlayers(players);
