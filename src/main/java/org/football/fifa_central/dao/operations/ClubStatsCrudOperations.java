@@ -60,7 +60,7 @@ public class ClubStatsCrudOperations {
             }
             int[] rs = statement.executeBatch();
             if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
-                System.out.println("One of entries failed in clu stats");
+                System.out.println("One of entries failed in club stats");
                 return null;
             }
             return clubStatsToSave;

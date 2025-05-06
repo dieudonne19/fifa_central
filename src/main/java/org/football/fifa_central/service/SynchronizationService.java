@@ -31,18 +31,18 @@ public class SynchronizationService {
         List<Player> synchronizedPlayers = new ArrayList<>();
         List<PlayerStats> synchronizedPlayerStats = new ArrayList<>();
         for (Championship championship : championships) {
-             synchronizedClubs.addAll(clubService.sync(championship));
-             synchronizedSeasons.addAll(seasonService.sync(championship));
-             synchronizedPlayers.addAll(playerService.synchronize(championship));
-             synchronizedSeasons.forEach(season -> {
-            synchronizedClubStats.addAll(clubStatsService.sync(championship,season));
-             });
+            synchronizedClubs.addAll(clubService.sync(championship));
+            synchronizedSeasons.addAll(seasonService.sync(championship));
+            synchronizedPlayers.addAll(playerService.synchronize(championship));
+            synchronizedSeasons.forEach(season -> {
+                synchronizedClubStats.addAll(clubStatsService.sync(championship, season));
+            });
 
         }
         for (Championship championship : championships) {
-             synchronizedSeasons.forEach(season -> {
-           synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship,synchronizedPlayers,season));
-             });
+            synchronizedSeasons.forEach(season -> {
+                synchronizedPlayerStats.addAll(playerStatisticsService.synchronize(championship, synchronizedPlayers, season));
+            });
         }
 
         if (synchronizedClubs != null && synchronizedSeasons != null && synchronizedClubStats != null) {

@@ -150,7 +150,7 @@ public class PlayerStatisticsCrudOperations {
 
             int[] rs = statement.executeBatch(); // Batch 💥
             if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
-                System.out.println("One of entries failed");
+                System.out.println("One of entries failed in player stats");
                 return null;
             }
             // Pas besoin de re-fetch les playersStats si on fait juste du save

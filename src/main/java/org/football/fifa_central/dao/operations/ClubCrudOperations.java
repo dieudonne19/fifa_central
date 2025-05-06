@@ -79,11 +79,8 @@ public class ClubCrudOperations {
                 preparedStatement.addBatch();
             }
             int[] rs = preparedStatement.executeBatch(); // Batch 💥
-            if (Arrays.stream(rs).filter(value -> value != 1).toArray().length > 0) {
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
                 System.out.println("One of entries failed");
-                for (int r : rs) {
-                    System.out.println(r);
-                }
                 return null;
             }
             return clubs;

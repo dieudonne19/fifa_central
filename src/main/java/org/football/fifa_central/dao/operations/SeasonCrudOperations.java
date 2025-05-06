@@ -28,7 +28,7 @@ public class SeasonCrudOperations {
     private final SeasonMapper seasonMapper;
 
     public List<Season> getSeasonsFromApi(String apiUrl) {
-        ResponseEntity<List<Season>> response = restTemplate.exchange(apiUrl + "seasons", HttpMethod.GET, null, new ParameterizedTypeReference<List<Season>>() {
+        ResponseEntity<List<Season>> response = restTemplate.exchange(apiUrl + "/seasons", HttpMethod.GET, null, new ParameterizedTypeReference<List<Season>>() {
         });
         // System.out.println("seasons "+response.getBody());
 
@@ -49,9 +49,8 @@ public class SeasonCrudOperations {
                 statement.addBatch();
             }
             int[] rs = statement.executeBatch();
-            if (Arrays.stream(rs).filter(value -> value != 0).toArray().length > 0) {
-                System.out.println("One of entries failed " + rs.length);
-
+            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+                System.out.println("One of entries failed in season");
                 return null;
             }
             return seasons;
