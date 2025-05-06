@@ -5,10 +5,9 @@ import org.football.fifa_central.dao.mapper.BestPlayerMapper;
 import org.football.fifa_central.dao.operations.ChampionshipCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerCrudOperations;
 import org.football.fifa_central.dao.operations.PlayerStatisticsCrudOperations;
-import org.football.fifa_central.model.BestPlayer;
-import org.football.fifa_central.model.Championship;
-import org.football.fifa_central.model.Player;
-import org.football.fifa_central.model.PlayerStats;
+import org.football.fifa_central.model.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -62,13 +61,34 @@ public class PlayerService {
         return playersSavedToCentral;
     }
 
-    public ResponseEntity<Object> getBestPlayerFromAllChampionship() {
-        List<PlayerStats> playerStats = playerStatisticsCrudOperations.getAllFromDB().stream()
-                .sorted(Comparator.comparing(PlayerStats::getScoredGoals)).toList().reversed();
+    public ResponseEntity<Object> getBestPlayerFromAllChampionship(Integer top, DurationUnit playingTimeUnit) {
+        if (!playingTimeUnit.equals(DurationUnit.MINUTE)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sorry, all playing time unit are mapped to MINUTE so try MINUTE INSTEAD OF " + playingTimeUnit);
+        }
 
+        List<PlayerStats> playerStats = playerStatisticsCrudOperations.getAllFromDB().stream()
+                .sorted(Comparator.comparing(PlayerStats::getScoredGoals))
+                .toList().reversed();
+        List<PlayerStats> playerStatsHavingSameGoals = new ArrayList<>();
+        List<PlayerStats> playerStatsScoredGoals = new ArrayList<>();
         List<BestPlayer> bestPlayers = new ArrayList<>();
 
         playerStats.forEach(pls -> {
+            int baseGoals = 0;
+
+            if (pls.getScoredGoals() == baseGoals) {
+                playerStatsHavingSameGoals.add(pls);
+            } else {
+                baseGoals = pls.getScoredGoals();
+                playerStatsScoredGoals.add(pls);
+            }
+        });
+        playerStatsHavingSameGoals.sort(Comparator.comparing(pls -> pls.getPlayingTime().getValue()));
+
+        List<PlayerStats> combinedPlayerStats = new ArrayList<>(playerStatsScoredGoals);
+        combinedPlayerStats.addAll(playerStatsHavingSameGoals.reversed());
+
+        combinedPlayerStats.forEach(pls -> {
             String playerId = Arrays.stream(pls.getId().split("-")).toList().getLast();
             Player player = playerCrudOperations.getById(playerId);
 
@@ -81,7 +101,22 @@ public class PlayerService {
             bestPlayers.add(bestPlayer);
         });
 
-        return ResponseEntity.ok(bestPlayers);
+        List<BestPlayer> confirmedBestPlayers = bestPlayers.stream()
+                .filter(bestPlayer -> bestPlayer.getPlayingTime().getUnit().equals(playingTimeUnit))
+                .toList();
+
+        if (confirmedBestPlayers.isEmpty()) {
+            return ResponseEntity.ok(bestPlayers);
+        }
+
+        if (top == null) {
+            return ResponseEntity.ok(confirmedBestPlayers.subList(0, 5));
+        }
+        if (top > bestPlayers.size()) {
+            return ResponseEntity.ok(confirmedBestPlayers);
+        }
+
+        return ResponseEntity.ok(confirmedBestPlayers.subList(0, top));
     }
 
 
