@@ -104,4 +104,23 @@ public class ClubCrudOperations {
         return clubs;
     }
 
+    @SneakyThrows
+    public List<Club> getAllByChampionshipId(String championshipId) {
+        List<Club> clubs = new ArrayList<>();
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT id, name, year_creation, acronym, stadium, championship_id, coach_name, sync_date"
+                        + " FROM club where championship_id = ?;");
+        ) {
+            statement.setString(1, championshipId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Club club = clubMapper.apply(resultSet);
+                    clubs.add(club);
+                }
+            }
+        }
+        return clubs;
+    }
+
 }

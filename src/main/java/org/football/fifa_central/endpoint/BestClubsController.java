@@ -14,7 +14,6 @@ public class BestClubsController {
     @GetMapping("/bestClubs")
     public Object getBestClubs(@RequestParam(required = false,defaultValue = "5") int top) {
         return bestClubService.getBestClubs(top);
-
     }
 
 }

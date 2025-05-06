@@ -116,7 +116,7 @@ public class ChampionshipCrudOperations {
             for (Championship championship : entities) {
                 statement.setString(1, championship.getId());
                 statement.setString(2, championship.getName().toString());
-                statement.setString(3, championship.getCountry());
+                // statement.setString(3, championship.getCountry());
                 statement.setString(4, championship.getApiUrl());
 
                 statement.addBatch();

@@ -14,5 +14,4 @@ public class Club {
     private Championship championship;
     private Coach coach;
     private Instant sync_date;
-
 }
