@@ -62,13 +62,24 @@ public class PlayerService {
     }
 
     public ResponseEntity<Object> getBestPlayerFromAllChampionship(Integer top, DurationUnit playingTimeUnit) {
-        if (!playingTimeUnit.equals(DurationUnit.MINUTE)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sorry, all playing time unit are mapped to MINUTE so try MINUTE INSTEAD OF " + playingTimeUnit);
-        }
-
         List<PlayerStats> playerStats = playerStatisticsCrudOperations.getAllFromDB().stream()
                 .sorted(Comparator.comparing(PlayerStats::getScoredGoals))
-                .toList().reversed();
+                .map(pls -> {
+                    PlayingTime playingTime = pls.getPlayingTime();
+                    playingTime.setUnit(playingTimeUnit);
+
+                    if (playingTimeUnit.equals(DurationUnit.SECOND)) {
+                        playingTime.setValue(playingTime.getValue() * 60);
+                        pls.setPlayingTime(playingTime);
+                        return pls;
+                    } else if (playingTimeUnit.equals(DurationUnit.HOUR)) {
+                        playingTime.setValue(playingTime.getValue() / 60);
+                        pls.setPlayingTime(playingTime);
+                        return pls;
+                    }
+                    return pls;
+                })
+                .toList();
         List<PlayerStats> playerStatsHavingSameGoals = new ArrayList<>();
         List<PlayerStats> playerStatsScoredGoals = new ArrayList<>();
         List<BestPlayer> bestPlayers = new ArrayList<>();
