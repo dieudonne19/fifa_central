@@ -1,6 +1,7 @@
 package org.football.fifa_central.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.Instant;
@@ -19,5 +20,6 @@ public class PlayerStats {
 
     private Player player;
     private Season season;
+    @JsonIgnore
     private PlayingTime playingTime;
 }

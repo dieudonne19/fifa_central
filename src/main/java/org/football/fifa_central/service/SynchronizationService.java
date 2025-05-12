@@ -31,7 +31,10 @@ public class SynchronizationService {
         List<Player> synchronizedPlayers = new ArrayList<>();
         List<PlayerStats> synchronizedPlayerStats = new ArrayList<>();
         for (Championship championship : championships) {
+
             synchronizedClubs.addAll(clubService.sync(championship));
+        }
+        for (Championship championship : championships) {
             synchronizedSeasons.addAll(seasonService.sync(championship));
             synchronizedPlayers.addAll(playerService.synchronize(championship));
             synchronizedSeasons.forEach(season -> {

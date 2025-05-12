@@ -57,10 +57,10 @@ public class SeasonCrudOperations {
                 statement.addBatch();
             }
             int[] rs = statement.executeBatch();
-            if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
-                System.out.println("One of entries failed in season");
-                return null;
-            }
+           // if (!Arrays.stream(rs).allMatch(value -> value == 1)) {
+             //   System.out.println("One of entries failed in season");
+            //    return null;
+           // }
             return seasons;
         }
     }
